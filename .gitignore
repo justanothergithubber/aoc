@@ -4,3 +4,7 @@ inputs
 
 # no cache
 __pycache__
+
+# vscode
+.vscode
+*.code-workspace

@@ -1,6 +1,6 @@
 """Simple data helper function."""
 from pathlib import Path
-from requests import get
+from urllib.request import Request, urlopen
 
 data_folder = Path("./inputs")
 
@@ -12,6 +12,7 @@ def get_day_input(day):
     Assumes that cookie file exists.
     """
     input_file = f"day{day}_input"
+    day_url = f"https://adventofcode.com/2020/day/{day}/input"
     data_folder.mkdir(exist_ok=True)
     input_file_path = data_folder / input_file
     if input_file_path.is_file():
@@ -19,9 +20,10 @@ def get_day_input(day):
     else:
         print("input not found locally, downloading")
         with open("cookie") as cookie_file:
-            cookies = {"session": cookie_file.read()}
-        input_get = get(f"https://adventofcode.com/2020/day/{day}/input",
-                        cookies=cookies)
-        with open(input_file_path, "w") as input_file_object:
-            input_file_object.write(input_get.text)
-    return open(input_file_path, 'r').read().split('\n')[:-1]
+            cookie = cookie_file.read()
+        req = Request(day_url, headers={"Cookie": f"session={cookie}"})
+        with urlopen(req) as response:
+            the_page = response.read()
+            with open(input_file_path, "wb") as input_file_object:
+                input_file_object.write(the_page)
+    return open(input_file_path, "r").read().split("\n")[:-1]
