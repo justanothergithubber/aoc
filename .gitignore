@@ -2,7 +2,7 @@
 cookie
 inputs
 
-# no cache
+# no python cache
 __pycache__
 
 # vscode
